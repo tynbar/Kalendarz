@@ -157,7 +157,7 @@ public class Main extends javax.swing.JFrame {
     {  
         for (Wydarzenie lista1 : lista)
         {
-           
+            System.out.println("");
         }
         return false;
     }
