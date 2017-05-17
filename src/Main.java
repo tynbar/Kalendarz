@@ -114,9 +114,11 @@ public class Main extends javax.swing.JFrame {
                 int col = t.getjTable1().columnAtPoint(e.getPoint());
                 if (e.getClickCount() == 2 && row>1 ) 
                 {   
+                    
                     t.activeDay = Integer.parseInt(t.jTable1.getValueAt(row, col).toString());
                     r = new Rezerwacja();
                     r.setVisible(true);
+                    delete(r);
                     r.getLbData().setText(t.activeDay+" "+t.name_m[t.activeMonth-1]);
                     showEvent(t,r);
                     r.getjButton1().addMouseListener(new MouseAdapter()
@@ -128,7 +130,7 @@ public class Main extends javax.swing.JFrame {
                                 checkEvent(r,t);
                                 addEvent(t, r);
                                 save();
-                                r.setVisible(false);
+                                r.dispose();
                             } catch (ParseException ex) {
                                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IOException ex) {
@@ -157,7 +159,7 @@ public class Main extends javax.swing.JFrame {
     {  
         for (Wydarzenie lista1 : lista)
         {
-            System.out.println("");
+            
         }
         return false;
     }
@@ -190,6 +192,38 @@ public class Main extends javax.swing.JFrame {
             f.close();
         }
 	
+    }
+    void delete(Rezerwacja r)
+    {
+        r.getjTable3().addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e) 
+            {
+              
+               
+               r.getjButton2().addMouseListener(new MouseAdapter()
+               {
+                    @Override
+                    public void mousePressed(MouseEvent e) 
+                    {
+                        String nazwa = r.getjTable3().getValueAt(r.getjTable3().getSelectedRow(), 3).toString();
+                        System.out.println(r.getjTable3().getSelectedRow());
+                        ((DefaultTableModel)r.getjTable3().getModel()).removeRow(r.getjTable3().getSelectedRow());
+                        
+                       for (Wydarzenie lista1 : lista)
+                        {   
+                           if(nazwa==lista1.name) 
+                           {
+                               lista.remove(lista1);
+                               
+                           }
+                        }
+                         
+                    }
+               });
+            }    
+        });
     }
     void load() throws IOException
     {   
