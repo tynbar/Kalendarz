@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,9 +119,13 @@ public class Main extends javax.swing.JFrame {
                     t.activeDay = Integer.parseInt(t.jTable1.getValueAt(row, col).toString());
                     r = new Rezerwacja();
                     r.setVisible(true);
-                    delete(r);
                     r.getLbData().setText(t.activeDay+" "+t.name_m[t.activeMonth-1]);
                     showEvent(t,r);
+                    try {
+                        delete(r);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     r.getjButton1().addMouseListener(new MouseAdapter()
                     {
                         @Override
@@ -193,37 +198,38 @@ public class Main extends javax.swing.JFrame {
         }
 	
     }
-    void delete(Rezerwacja r)
+    void delete(Rezerwacja r) throws IOException
     {
         r.getjTable3().addMouseListener(new MouseAdapter()
         {
             @Override
             public void mousePressed(MouseEvent e) 
             {
-              
-               
-               r.getjButton2().addMouseListener(new MouseAdapter()
-               {
+                System.out.println(e.getClickCount());
+                r.getjButton2().addMouseListener(new MouseAdapter()
+                {
                     @Override
                     public void mousePressed(MouseEvent e) 
-                    {
-                        String nazwa = r.getjTable3().getValueAt(r.getjTable3().getSelectedRow(), 3).toString();
-                        System.out.println(r.getjTable3().getSelectedRow());
-                        ((DefaultTableModel)r.getjTable3().getModel()).removeRow(r.getjTable3().getSelectedRow());
-                        
-                       for (Wydarzenie lista1 : lista)
-                        {   
-                           if(nazwa==lista1.name) 
-                           {
-                               lista.remove(lista1);
-                               
-                           }
+                    {   
+                        if(r.getjTable3().getSelectedRow()>=0)
+                        {
+                            String nazwa = r.getjTable3().getValueAt(r.getjTable3().getSelectedRow(), 3).toString();
+                            System.out.println(r.getjTable3().getSelectedRow());
+                            ((DefaultTableModel)r.getjTable3().getModel()).removeRow(r.getjTable3().getSelectedRow());
+                            for (Iterator<Wydarzenie> iterator = lista.iterator(); iterator.hasNext(); ) 
+                            {
+                                Wydarzenie value = iterator.next();
+                                if (value.name==nazwa)
+                                {
+                                    iterator.remove();
+                                }
+                            }
                         }
-                         
                     }
                });
             }    
         });
+        save();
     }
     void load() throws IOException
     {   

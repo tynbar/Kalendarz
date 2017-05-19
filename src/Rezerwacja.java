@@ -20,7 +20,7 @@ public class Rezerwacja extends javax.swing.JFrame  {
         initComponents();
         fillComponent();
     }
-
+        
     void fillComponent()
     {
         pGodzina.removeAllItems();
